@@ -1,0 +1,31 @@
+<div class="row" style="width: 100%; height: calc(100% - 25px);" flex class="{{ m_classe_fonte }} ">
+	<jw-modal id="erreur">
+		<h4>Erreur</h4>
+		<h4>{{m_msg_err}}</h4>
+		<button (click)="closeModal('erreur');">OK</button>
+	</jw-modal>
+	<jw-modal id="info">
+		<h4>Message</h4>
+		<h4>{{m_msg_info}}</h4>
+		<button (click)="closeModalbis('info','OK');">OK</button>
+		<button (click)="closeModalbis('info','Cancel');">Cancel</button>
+	</jw-modal>
+	<div>
+		<form [formGroup]="formRecherche">
+			<div class="form-group">
+				<label style="width: 50px;" for="lblid_terr"> Territoire: </label>
+				<select formControlName="m_filtre_terr" id="m_filtre_terr" class=" {{ m_classe_fonte }} ">
+					<option *ngFor="let item of m_cbo_terr.m_liste_items; let i = index" [value]="m_cbo_terr.m_liste_items[i].m_id">{{m_cbo_terr.m_liste_items[i].m_lib}}</option>
+				</select>
+			</div>
+		</form>
+		<button (click)="onBtnRecherche()" class=" {{ m_classe_fonte }} ">Rechercher</button>
+	</div>
+	<div id="stt" style="height: 100%; z-index: 98;" >
+		<ag-charts-angular style="height: 100%;" [options]="options_stt" ></ag-charts-angular>
+		<!--ag-charts-angular style="position: absolute; top: 10; right: 0; bottom: 0; left: 0;" [options]="options_stt"></ag-charts-angular-->
+	</div>
+</div>
+<!--ag-charts-angular
+    style="position: absolute; top: 0; right: 0; bottom: 0; left: 0;" [options]="options">
+</ag-charts-angular-->

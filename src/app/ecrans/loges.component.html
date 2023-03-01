@@ -1,0 +1,144 @@
+<!--app-menu></app-menu-->
+<div class="row" style="width: 100%; height: 100%" class=" {{ m_classe_fonte }} ">
+	<!--div style="border:2px solid #000;width: 100%; overflow: auto;padding: 2px; min-height: 80px;resize:vertical; box-sizing: border-box;"-->
+	<div style=" {{ m_style_bloc_maitre }} ">
+	<!--div style="border:1px solid #000;width: 100%;height: 200px; overflow: auto;padding: 1px; min-height: 80px;resize:vertical;"-->
+		<jw-modal id="erreur">
+			<h4>Erreur</h4>
+			<h4>{{m_msg_err}}</h4>
+			<h5>{{m_sql_err}}</h5>
+			<h5>{{m_data_err}}</h5>
+			<h5>{{m_pile_err}}</h5>
+			<button (click)="closeModal('erreur');">OK</button>
+		</jw-modal>
+		<jw-modal id="info">
+			<h4>Message</h4>
+			<h4>{{m_msg_info}}</h4>
+			<button (click)="closeModalbis('info','OK');">OK</button>
+			<button (click)="closeModalbis('info','Cancel');">Cancel</button>
+		</jw-modal>
+		<form [formGroup]="formRecherche">
+			<div class="form-group">
+				<label class=" {{m_classe_entete}} "> Les loges:</label>
+				<label>Nom: </label>
+				<input style="width: 150px;" type="text" id="m_filtre_nom_loge" class=" {{ m_classe_fonte }} " name="m_filtre_nom_loge" formControlName="m_filtre_nom_loge">  <!-- ngModel -->
+				<label style="width: 50px;" for="lblid_obed"> Obédience: </label>
+				<!--select formControlName="ctrl_orders" id="ctrl_orders">
+					<option *ngFor="let order of ctrl_orders; let i = index" [value]="ctrl_orders[i].id">{{ctrl_orders[i].name}}</option-->
+				<select formControlName="m_filtre_obed" id="m_filtre_obed" class=" {{ m_classe_fonte }} ">
+					<option *ngFor="let item of m_cbo_obeds.m_liste_items; let i = index" [value]="m_cbo_obeds.m_liste_items[i].m_id">{{m_cbo_obeds.m_liste_items[i].m_lib}}</option>
+				</select>
+				<label style="width: 50px;" for="lblid_terr"> Territoire: </label>
+				<select formControlName="m_filtre_terr" id="m_filtre_terr" class=" {{ m_classe_fonte }} ">
+					<option *ngFor="let item of m_cbo_terr.m_liste_items; let i = index" [value]="m_cbo_terr.m_liste_items[i].m_id">{{m_cbo_terr.m_liste_items[i].m_lib}}</option>
+				</select>
+				<label style="width: 50px;" for="lblid_orient"> Orient: </label>
+				<select formControlName="m_filtre_orient" id="m_filtre_orient" class=" {{ m_classe_fonte }} ">
+					<option *ngFor="let item of m_cbo_orients.m_liste_items; let i = index" [value]="m_cbo_orients.m_liste_items[i].m_id">{{m_cbo_orients.m_liste_items[i].m_lib}}</option>
+				</select>
+				<label style="width: 50px;" for="lblid_orient"> Type: </label>
+				<select formControlName="m_filtre_type_loge" id="m_filtre_type_loge" class=" {{ m_classe_fonte }} ">
+					<option *ngFor="let item of m_cbo_type_loge.m_liste_items; let i = index" [value]="m_cbo_type_loge.m_liste_items[i].m_id">{{m_cbo_type_loge.m_liste_items[i].m_lib}}</option>
+				</select>
+				<label style="width: 25px;" for="lblactif"> Actif: </label>
+				<input style="width: 15px;" type="checkbox" id="m_filtre_actif" name="m_filtre_actif" formControlName="m_filtre_actif" class=" {{ m_classe_fonte }} ">
+			</div>
+		</form>
+		<button (click)="onBtnRecherche()" class=" {{ m_classe_fonte }} ">Rechercher</button>
+		<label style="width: 25px;" for="lblnb"> {{m_nb_lignes_maitre}} </label>
+		<button (click)="onViderCriteres()" class=" {{ m_classe_fonte }} ">Vider critères</button>
+		<button (click)="onExcelMaitre()" class=" {{ m_classe_fonte }} " [disabled]="m_interdit_exp">Excel</button>
+		<progress max="100" value=" {{m_pourcent_telechargement}} "></progress>
+		<!--ag-grid-angular style="width: 100%; height: 300px;" class="ag-theme-alpine" [rowData]="m_json_maitre" [columnDefs]="m_col_maitre" rowSelection='single' enableColResize (gridReady)="onGridMaitreReady($event)" (selectionChanged) = 'onSelectionMaitreChanged($event)'></ag-grid-angular-->
+		<!--ag-grid-angular style="height: 300px;" class="ag-theme-alpine" [rowData]="m_json_maitre" [columnDefs]="m_col_maitre" rowSelection='single' enableColResize (gridReady)="onGridMaitreReady($event)"  (rowClicked)="onRowClickMaitre($event)"></ag-grid-angular-->
+		<!--ag-grid-angular style=" {{m_style_grille_maitre}} " class=" {{m_classe_grille}} " [gridOptions]="m_grid_options_maitre" rowSelection='single' enableColResize (gridReady)="onGridMaitreReady($event)" (rowClicked)="onRowClickMaitre($event)" (columnResized)="onColumnMaitreResized($event)" [headerHeight]="m_hauteur_entete"></ag-grid-angular-->
+		<ag-grid-angular style="width: 100%;height:100%;" class=" {{m_classe_grille}} " [gridOptions]="m_grid_options_maitre" rowSelection='single' enableColResize (gridReady)="onGridMaitreReady($event)" (rowClicked)="onRowClickMaitre($event)" (columnResized)="onColumnMaitreResized($event)" [headerHeight]="m_hauteur_entete"></ag-grid-angular >
+	</div>
+	<div style="border:2px solid #000;width: 100%; overflow: auto;padding: 1px; box-sizing: boreder-box;">
+	<!--div class="resizer" id="splitter_loge" style="width:100%;height:10px;border:1px solid #000;"></div-->
+		<button class="{{m_classe_boutons[1]}}" (click)="onBtnDetail('loge')">{{m_blocs[1].m_lib_bloc}}</button>
+		<button class="{{m_classe_boutons[2]}}" (click)="onBtnDetail('membres')">{{m_blocs[2].m_lib_bloc}}</button>
+		<button class="{{m_classe_boutons[3]}}" (click)="onBtnDetail('tenues')">{{m_blocs[3].m_lib_bloc}}</button>
+		<button class="{{m_classe_boutons[4]}}" (click)="onBtnDetail('offices')">{{m_blocs[4].m_lib_bloc}}</button>
+		<button class="{{m_classe_boutons[5]}}" (click)="onBtnDetail('offices_anciens')">{{m_blocs[5].m_lib_bloc}}</button>
+		<button class="{{m_classe_boutons[6]}}" (click)="onBtnDetail('documents')">{{m_blocs[6].m_lib_bloc}}</button>
+		<label style="width: 50px;" > / </label>
+		<button class=" {{ m_classe_fonte }} " (click)="onExcelDetails()" [disabled]="m_interdit_exp">Excel</button>
+		<button class=" {{ m_classe_fonte }} " (click)="onCreer()" [disabled]="m_interdit_ecr">Créer</button>
+		<button class=" {{ m_classe_fonte }} " (click)="onSupprimer()" [disabled]="m_interdit_ecr">Supprimer</button>
+		<button class=" {{ m_classe_fonte }} " (click)="onSauver()" [disabled]="m_interdit_ecr">Sauver</button>
+		<button class=" {{ m_classe_fonte }} " (click)="onAugmenterTaille()">V</button>
+		<button class=" {{ m_classe_fonte }} " (click)="onDiminuerTaille()">A</button>
+		<div *ngIf="m_onglet_principal">
+			<form [formGroup]="formOngletPrincipal">
+				<div class="form-group">
+					<div class="column">
+						<div class="row">
+							<label class=" {{m_classe_label_onglet_principal}} " class="obligatoire">Code: </label>
+							<input type="text" formControlName="m_code_loge" name="code_loge" (change)="onChangeEvent($event)" class=" {{m_classe_fonte}} " style=" {{m_style_champs_onglet_principal}} ">
+						</div>
+						<div class="row">
+							<label class=" {{m_classe_label_onglet_principal}} " class="obligatoire">Nom: </label>
+							<input type="text" formControlName="m_nom_loge" name="nom_loge" (change)="onChangeEvent($event)" class=" {{m_classe_fonte}} " style=" {{m_style_champs_onglet_principal}} ">
+						</div>
+						<div class="row">
+							<label class=" {{m_classe_label_onglet_principal}} " class="obligatoire">Obédience: </label>
+							<select formControlName="m_id_obed" name="id_obed" (change)="onChangeEvent($event)" class=" {{m_classe_fonte}} ">
+								<option *ngFor="let item of m_cbo_obeds.m_liste_items; let i = index" [value]="m_cbo_obeds.m_liste_items[i].m_id">{{m_cbo_obeds.m_liste_items[i].m_lib}}</option>
+							</select>
+						</div>
+						<div class="row">
+							<label class=" {{m_classe_label_onglet_principal}} " class="obligatoire">Orient: </label>
+							<select formControlName="m_id_orient" name="id_orient" (change)="onChangeEvent($event)" class=" {{m_classe_fonte}} ">
+								<option *ngFor="let item of m_cbo_orients.m_liste_items; let i = index" [value]="m_cbo_orients.m_liste_items[i].m_id">{{m_cbo_orients.m_liste_items[i].m_lib}}</option>
+							</select>
+						</div>
+						<div class="row">
+							<label class=" {{m_classe_label_onglet_principal}} " class="obligatoire">Type: </label>
+							<select formControlName="m_id_type_loge" name="id_type_loge" (change)="onChangeEvent($event)" class=" {{m_classe_fonte}} ">
+								<option *ngFor="let item of m_cbo_type_loge.m_liste_items; let i = index" [value]="m_cbo_type_loge.m_liste_items[i].m_id">{{m_cbo_type_loge.m_liste_items[i].m_lib}}</option>
+							</select>
+						</div>
+						<div class="row" class="label_onglet_principal">
+							<label class=" {{m_classe_label_onglet_principal}} ">Numéro: </label>
+							<input type="number" formControlName="m_num_loge" name="num_loge" (change)="onChangeEvent($event)" class=" {{m_classe_fonte}} " style="width: 50px;">
+						</div>
+						<div class="row">
+							<label class=" {{m_classe_label_onglet_principal}} ">Rite: </label>
+							<select formControlName="m_id_rite" name="id_rite" (change)="onChangeEvent($event)" class=" {{m_classe_fonte}} ">
+								<option *ngFor="let item of m_cbo_rite.m_liste_items; let i = index" [value]="m_cbo_rite.m_liste_items[i].m_id">{{m_cbo_rite.m_liste_items[i].m_lib}}</option>
+							</select>
+						</div>
+						<div class="row">
+							<label class=" {{m_classe_label_onglet_principal}} ">Territoire: </label>
+							<select formControlName="m_id_terr" name="id_terr" (change)="onChangeEvent($event)" class=" {{m_classe_fonte}} ">
+								<option *ngFor="let item of m_cbo_terr.m_liste_items; let i = index" [value]="m_cbo_terr.m_liste_items[i].m_id">{{m_cbo_terr.m_liste_items[i].m_lib}}</option>
+							</select>
+						</div>
+						<div class="row">
+							<label class=" {{m_classe_label_onglet_principal}} ">Temple: </label>
+							<select formControlName="m_id_temple" name="id_temple" (change)="onChangeEvent($event)" class=" {{m_classe_fonte}} ">
+								<option *ngFor="let item of m_cbo_temple.m_liste_items; let i = index" [value]="m_cbo_temple.m_liste_items[i].m_id">{{m_cbo_temple.m_liste_items[i].m_lib}}</option>
+							</select>
+						</div>
+						<div class="row">
+							<label class=" {{m_classe_label_onglet_principal}} ">Numéro RNA: </label>
+							<input type="text" formControlName="m_num_rna" name="num_rna" (change)="onChangeEvent($event)" class=" {{m_classe_fonte}} " style="width: 200px;">
+						</div>
+						<div class="row">
+							<label class=" {{m_classe_label_onglet_principal}} ">Active: </label>
+							<input type="checkbox" formControlName="m_active" name="active" (change)="onChangeEvent($event)" class=" {{m_classe_fonte}} " style=" {{m_style_champs_onglet_principal}} ">
+						</div>
+						<!--button type="submit">Rechercher</button-->
+					</div>
+				</div>
+			</form>
+		</div>
+		<div  *ngIf="!m_onglet_principal">
+			<!--ag-grid-angular style="width: 100%; height: 300px;" class="ag-theme-alpine" [rowData]="m_json_detail" [columnDefs]="m_col_detail" rowSelection='single' enableColResize (gridReady)="onGridDetailReady($event)" [frameworkComponents]="frameworkComponents" (cellValueChanged)="onCellValueDetailChanged($event)"></ag-grid-angular-->
+			<ag-grid-angular style="width: 100%; height: 300px;" name="detail" class=" {{m_classe_grille}} " [gridOptions]="m_grid_options_detail" rowSelection='single' enableColResize (gridReady)="onGridDetailReady($event)" (cellValueChanged)="onCellValueDetailChanged($event)" (focusin)="onFocusIn($event)" (rowClicked)="onRowClickDetail($event)" (columnResized)="onColumnDetailResized($event)" (cellClicked)="onCellClickDetail($event)" [headerHeight]="m_hauteur_entete"></ag-grid-angular>
+		</div>
+		<!--ag-grid-angular style="width: 100%; height: 300px;" class="ag-theme-alpine" [rowData]="m_json_detail" [columnDefs]="m_col_detail" enableColResize (gridReady)="onGridDetailReady($event)" [frameworkComponents]="frameworkComponents"></ag-grid-angular-->
+	<!--/div-->
+	</div>
+</div>
